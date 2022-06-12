@@ -9,6 +9,7 @@ import style from './App.module.scss';
 function App() {
   const [tarefas, setTarefas] = useState<ITarefa[]>([]);
   const [selecionado, setSelecionado] = useState<ITarefa>();
+
   function selecionaTarefa(tarefaSelecionada: ITarefa) {
     setSelecionado(tarefaSelecionada);
     setTarefas((tarefasAnteriores) =>
@@ -18,11 +19,32 @@ function App() {
       }))
     );
   }
+
+  function finalizarTarefa() {
+    if (selecionado) {
+      setTarefas((tarefasAnteriores) =>
+        tarefasAnteriores.map((tarefa) => {
+          if (tarefa.id === selecionado.id) {
+            return {
+              ...tarefa,
+              selecionado: false,
+              completado: true,
+            };
+          }
+          return tarefa;
+        })
+      );
+    }
+  }
+
   return (
     <div className={style.AppStyle}>
       <Formulario setTarefas={setTarefas}></Formulario>
       <Lista tarefas={tarefas} selecionaTarefa={selecionaTarefa} />
-      <Cronometro></Cronometro>
+      <Cronometro
+        selecionado={selecionado}
+        finalizarTarefa={finalizarTarefa}
+      ></Cronometro>
     </div>
   );
 }
